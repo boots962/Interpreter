@@ -5,6 +5,9 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "Stack.h"
+
+
 #define MAX_LENGTH 100 //define the max length of chars a command can be in a line
 
 /* Jack Gelinas's interpreter */
@@ -85,9 +88,12 @@ char* getSubstring(char* str, int start, int end){
 and it will tokenize all important data, if it is an int, identifier
 etc, and it will send the data to the parser */
 int lexer(char* command){
+	Stack* tokens = (Stack*)malloc(sizeof(Stack));
+	init(tokens);
 	int right = 0, left = 0;
 	int length = strlen(command);
 	while(right <=length && left <=right){
+		Token currentToken;
 		if(!isDelimiter(command[right])){
 			right++;
 		}
@@ -95,15 +101,37 @@ int lexer(char* command){
 		if(isDelimiter(command[right]) && left == right){
 			if(isOperator(command[right])){
 				printf("Operator token: %c\n", command[right]);
+				currentToken.type = TOKEN_OPERATOR;
+				currentToken.lex[0] = command[right];
+				currentToken.val = 0;
+				push(tokens,currentToken);
 			}
 			right++;
 			left = right;
 		}
 		else if(isDelimiter(command[right]) && left != right || (right == length && left != right)){
 			char* substr = getSubstring(command, left, right-1);
-			if(isKeyword(substr)) printf("Keyword Token: %s\n", substr);
-			else if(isInteger(substr)) printf("Integer Token: %s\n", substr);
-			else if(isValid(substr) &&!isDelimiter(command[right-1])) printf("Identifier Token: %s\n", substr);
+			if(isKeyword(substr)){
+			printf("Keyword Token: %s\n", substr);
+			currentToken.type = TOKEN_KEYWORD;
+			strcpy(currentToken.lex, substr);
+			currentToken.val = 0;
+			push(tokens,currentToken);
+			}
+			else if(isInteger(substr)){
+			printf("Integer Token: %s\n", substr);
+			currentToken.type = TOKEN_NUMBER;
+			strcpy(currentToken.lex,substr);
+			currentToken.val = atoi(substr);
+			push(tokens,currentToken);
+			}
+			else if(isValid(substr) &&!isDelimiter(command[right-1])){
+			printf("Identifier Token: %s\n", substr);
+			currentToken.type = TOKEN_IDENTIFIER;
+			strcpy(currentToken.lex,substr);
+			currentToken.val = 0;
+			push(tokens,currentToken);
+			}
 			else if(!isValid(substr) && !isDelimiter(command[right-1])) printf("Un identified token");
 			left = right;
 		}
