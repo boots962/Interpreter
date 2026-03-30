@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 
-#include "Stack.h"
+#include "Parser.h"
 
 
 #define MAX_LENGTH 100 //define the max length of chars a command can be in a line
@@ -37,7 +37,7 @@ bool isDelimiter(char chr){
 
 //check if data is an operator
 bool isOperator(char chr){
-	    return (chr == '+' || chr == '-' || chr == '*'
+	    return (chr =='+' || chr=='-'||chr == '*'
             || chr == '/' || chr == '>' || chr == '<'
             || chr == '=');
 }
@@ -87,7 +87,7 @@ char* getSubstring(char* str, int start, int end){
 /* The lexer, this will loop through the commands,
 and it will tokenize all important data, if it is an int, identifier
 etc, and it will send the data to the parser */
-int lexer(char* command){
+Stack* lexer(char* command){
 	Stack* tokens = (Stack*)malloc(sizeof(Stack));
 	init(tokens);
 	int right = 0, left = 0;
@@ -101,7 +101,9 @@ int lexer(char* command){
 		if(isDelimiter(command[right]) && left == right){
 			if(isOperator(command[right])){
 				printf("Operator token: %c\n", command[right]);
-				currentToken.type = TOKEN_OPERATOR;
+				if(command[right] == '+') currentToken.type = TOKEN_PLUS;
+				else if(command[right] == '-') currentToken.type = TOKEN_MINUS;
+				else currentToken.type = TOKEN_OPERATOR;
 				currentToken.lex[0] = command[right];
 				currentToken.val = 0;
 				push(tokens,currentToken);
@@ -136,6 +138,7 @@ int lexer(char* command){
 			left = right;
 		}
 	}
+	return tokens;
 }
 
 /*reads input from line*/
@@ -158,6 +161,10 @@ int main(void){
 	while(true){
 		printf("\n>>> ");
 		read_line(command,MAX_LENGTH);
-		lexer(command);
+		Stack* parsing =  lexer(command);
+		if(!isEmpty(parsing)) printf("\n%d", pop(parse(parsing)).val);
+		else printf("Empty stack");
 	}
+	return 0;
 }
+

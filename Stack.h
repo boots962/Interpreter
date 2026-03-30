@@ -17,7 +17,7 @@ void init(Stack *stack){
 
 //checks if stack is empty
 bool isEmpty(Stack *stack){
-	return stack->top = -1;
+	return stack->top == -1;
 }
 
 //checks if stack is full
@@ -32,7 +32,6 @@ void push(Stack *stack, Token val){
 		return;
 	}
 	stack->seq[++stack->top] = val;
-	printf("pushed\n");
 }
 
 //pops top value in stack and returns it
@@ -45,9 +44,7 @@ Token pop(Stack *stack) {
 		empty.val = 0;
 		return empty;
 	}
-	Token popped = stack->seq[stack->top];
-	stack->top--;
-	printf("Popped");
+	return stack->seq[stack->top--];
 }
 
 //returns top value in stack
