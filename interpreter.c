@@ -76,7 +76,7 @@ char* getSubstring(char* str, int start, int end){
         int subLength = end - start+1;
         char* subStr = (char*)malloc((subLength+1)*sizeof(char));
         strncpy(subStr, str+start, subLength);
-        subStr[length] = '\0';
+        subStr[subLength] = '\0';
         return subStr;
 }
 
@@ -104,13 +104,23 @@ int lexer(char* command){
 			if(isKeyword(substr)) printf("Keyword Token: %s\n", substr);
 			else if(isInteger(substr)) printf("Integer Token: %s\n", substr);
 			else if(isValid(substr) &&!isDelimiter(command[right-1])) printf("Identifier Token: %s\n", substr);
-			else printf("Un identified token");
+			else if(!isValid(substr) && !isDelimiter(command[right-1])) printf("Un identified token");
 			left = right;
 		}
 	}
 }
 
-
+/*reads input from line*/
+int read_line(char str[], int n){
+	int ch, i=0;
+	while((ch = getchar())!= '\n'){
+		if (i<n-1){
+			str[i++] = ch;
+		}
+	}
+	str[i] = '\0';
+	return i;
+}
 
 /* main function that is going to
 run the loop for the lexer and syntax */
@@ -118,8 +128,8 @@ int main(void){
 	char command[MAX_LENGTH];
 
 	while(true){
-		printf(">>>\n");
-		fgets(command,MAX_LENGTH,stdin);
+		printf("\n>>> ");
+		read_line(command,MAX_LENGTH);
 		lexer(command);
 	}
 }
