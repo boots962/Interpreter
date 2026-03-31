@@ -7,9 +7,7 @@
 
 #include "Parser.h"
 
-
-#define MAX_LENGTH 100 //define the max length of chars a command can be in a line
-
+#define MAX_LENGTH 100
 /* Jack Gelinas's interpreter */
 
 /*checks for integet value from a string
