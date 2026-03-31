@@ -19,12 +19,22 @@ Token combinedResult(Token left, Token op, Token right){
 
 bool canReduce(Stack *stack){
 	if(stack->top<2) {return false; }
+
 	if(stack->seq[stack->top].type == TOKEN_NUMBER &&
 	  stack->seq[stack->top-1].type == TOKEN_PLUS &&
 	  stack->seq[stack->top-2].type == TOKEN_NUMBER) return true;
-	if(stack->seq[stack->top].type == TOKEN_NUMBER &&
+
+	else if(stack->seq[stack->top].type == TOKEN_NUMBER &&
 	  stack->seq[stack->top-1].type == TOKEN_MINUS &&
 	  stack->seq[stack->top-2].type == TOKEN_NUMBER) return true;
+
+	else if(stack->seq[stack->top].type == TOKEN_IDENTIFIER &&
+	  stack->seq[stack->top-1].type == TOKEN_PLUS &&
+	  stack->seq[stack->top-2].type == TOKEN_NUMBER) return true;
+
+	else if(stack->seq[stack->top].type == TOKEN_NUMBER &&
+	  stack->seq[stack->top-1].type == TOKEN_PLUS &&
+	  stack->seq[stack->top-2].type == TOKEN_IDENTIFIER) return true;
 	return false;
 }
 
@@ -34,7 +44,6 @@ bool isInitialize(Stack *stack){
 	  stack->seq[stack->top-1].type == TOKEN_OPERATOR &&
 	  stack->seq[stack->top-2].type == TOKEN_IDENTIFIER &&
 	  stack->seq[stack->top-3].type == TOKEN_KEYWORD){
-	printf("Has been initialized\n");
 	 return true;
 	}
 	return false;
@@ -44,29 +53,44 @@ Token createIdentifier(Token type, Token iden, Token val){
 	Token var;
 	var.type = type.type;
 	strcpy(var.lex, iden.lex);
-	var.val = val.val;
+	var.val = atoi(val.lex);
 	return var;
+
 }
 
-Stack* parse(Stack* stack){
-	Stack*activationStack = (Stack*)malloc(sizeof(Stack));
-	init(activationStack);
+Stack* parse(Stack* stack, Stack* activationStack){
 	if(isInitialize(stack)){
 		Token val = pop(stack);
 		pop(stack);
 		Token iden = pop(stack);
 		Token type = pop(stack);
 		push(activationStack, createIdentifier(type, iden, val));
+		Token dummy; dummy.type = TOKEN_NUMBER; dummy.val = val.val;
+		push(stack,dummy);
 	}
 
-	if(canReduce(stack)){
-		Token right = pop(stack);
+	else if(canReduce(stack)){
+		Token right;
+		bool foundRight = false;
+		if(stack->seq[stack->top].type == TOKEN_NUMBER){
+		right = pop(stack);
+		foundRight = true;
+		}
+		if(stack->seq[stack->top].type == TOKEN_IDENTIFIER && !isEmpty(activationStack)){
+		right = pop(activationStack);
+		pop(stack);
+		foundRight = true;
+		}
+		if(foundRight){
 		Token op = pop(stack);
 		Token left = pop(stack);
+		if(left.type == TOKEN_IDENTIFIER && !isEmpty(activationStack)){
+            		left = pop(activationStack);
+        	}
+
 		push(stack, combinedResult(left,op,right));
+		}
 	}
-	Token init = pop(activationStack);
-	printf("%s = %d", init.lex, init.val);
 	return stack;
 }
 

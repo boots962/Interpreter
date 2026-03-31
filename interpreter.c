@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <string.h>
 #include <stdio.h>
@@ -57,7 +58,7 @@ bool isKeyword(char* key){
             "const",    "continue", "default",  "do",
             "double",   "else",     "enum",     "extern",
             "float",    "for",      "goto",     "if",
-            "int",      "long",     "register", "return",
+            "goon",      "long",     "register", "return",
             "short",    "signed",   "sizeof",   "static",
             "struct",   "switch",   "typedef",  "union",
             "unsigned", "void",     "volatile", "while" };
@@ -98,7 +99,6 @@ Stack* lexer(char* command){
 
 		if(isDelimiter(command[right]) && left == right){
 			if(isOperator(command[right])){
-				printf("Operator token: %c\n", command[right]);
 				if(command[right] == '+') currentToken.type = TOKEN_PLUS;
 				else if(command[right] == '-') currentToken.type = TOKEN_MINUS;
 				else currentToken.type = TOKEN_OPERATOR;
@@ -112,21 +112,18 @@ Stack* lexer(char* command){
 		else if(isDelimiter(command[right]) && left != right || (right == length && left != right)){
 			char* substr = getSubstring(command, left, right-1);
 			if(isKeyword(substr)){
-			printf("Keyword Token: %s\n", substr);
 			currentToken.type = TOKEN_KEYWORD;
 			strcpy(currentToken.lex, substr);
 			currentToken.val = 0;
 			push(tokens,currentToken);
 			}
 			else if(isInteger(substr)){
-			printf("Integer Token: %s\n", substr);
 			currentToken.type = TOKEN_NUMBER;
 			strcpy(currentToken.lex,substr);
 			currentToken.val = atoi(substr);
 			push(tokens,currentToken);
 			}
 			else if(isValid(substr) &&!isDelimiter(command[right-1])){
-			printf("Identifier Token: %s\n", substr);
 			currentToken.type = TOKEN_IDENTIFIER;
 			strcpy(currentToken.lex,substr);
 			currentToken.val = 0;
@@ -155,12 +152,20 @@ int read_line(char str[], int n){
 run the loop for the lexer and syntax */
 int main(void){
 	char command[MAX_LENGTH];
-
+	Stack*activationStack = (Stack*)malloc(sizeof(Stack));
+	init(activationStack);
 	while(true){
 		printf("\n>>> ");
 		read_line(command,MAX_LENGTH);
+		if(strcmp(command, "clear")==0) return 0;
+		if(strcmp(command, "quit")==0) return 0;
 		Stack* parsing =  lexer(command);
-		if(!isEmpty(parsing)) printf("\n%d", pop(parse(parsing)).val);
+		if(!isEmpty(parsing)){
+			Stack*eval = parse(parsing, activationStack);
+			if(!isEmpty(eval)){
+			printf("\n%d",pop(eval).val);
+			}
+		}
 		else printf("Empty stack");
 	}
 	return 0;
