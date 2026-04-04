@@ -58,7 +58,7 @@ bool isKeyword(char* key){
             "const",    "continue", "default",  "do",
             "double",   "else",     "enum",     "extern",
             "float",    "for",      "goto",     "if",
-            "goon",      "long",     "register", "return",
+            "int",      "long",     "register", "return",
             "short",    "signed",   "sizeof",   "static",
             "struct",   "switch",   "typedef",  "union",
             "unsigned", "void",     "volatile", "while" };
