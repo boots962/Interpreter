@@ -10,7 +10,7 @@
 
 typedef struct Node{
 	char* key;
-	int value;
+	Token value;
 	struct Node* next;
 } Node;
 
