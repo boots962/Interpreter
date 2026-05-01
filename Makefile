@@ -1,11 +1,18 @@
-main : HashMap.o interpreter.o
-	gcc -o main HashMap.o interpreter.o
+all: main
 
-HashMap.o : HashMap.c HashMap.h
+main: HashMap.o Parser.o interpreter.o
+	gcc -o main HashMap.o Parser.o interpreter.o
+
+HashMap.o: HashMap.c HashMap.h Token.h
 	gcc -c HashMap.c
 
-interpreter.o : interpreter.c interpreter.h
+Parser.o: Parser.c Parser.h HashMap.h Stack.h Token.h
+	gcc -c Parser.c
+
+interpreter.o: interpreter.c Parser.h HashMap.h Stack.h Token.h
 	gcc -c interpreter.c
 
-clean :
+clean:
 	rm -f *.o main
+
+.PHONY: all clean

@@ -1,4 +1,5 @@
 #ifndef HASHMAP_H
+#define HASHMAP_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,19 +9,20 @@
 
 #define TABLE_SIZE 100
 
-typedef struct Node{
-	char* key;
-	Token value;
-	struct Node* next;
+typedef struct Node {
+    char* key;
+    Token value;
+    struct Node* next;
 } Node;
 
-typedef struct{
-	Node* map[TABLE_SIZE];
+typedef struct {
+    Node* map[TABLE_SIZE];
 } HashMap;
 
+void initHashMap(HashMap *map);
 unsigned int hash(const char* key);
-void insert(HashMap*Map, const char* key, Token value);
-Token get(HashMap *map, char*key);
-void remove(HashMap* map, char*key);
+void insert(HashMap* map, const char* key, Token value);
+Token get(HashMap *map, const char* key);
+void removeEntry(HashMap* map, const char* key);
 
 #endif

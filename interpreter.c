@@ -152,8 +152,8 @@ int read_line(char str[], int n){
 run the loop for the lexer and syntax */
 int main(void){
 	char command[MAX_LENGTH];
-	Stack*activationStack = (Stack*)malloc(sizeof(Stack));
-	init(activationStack);
+	HashMap activationMap;
+	initHashMap(&activationMap);
 	while(true){
 		printf("\n>>> ");
 		read_line(command,MAX_LENGTH);
@@ -161,7 +161,7 @@ int main(void){
 		if(strcmp(command, "quit")==0) return 0;
 		Stack* parsing =  lexer(command);
 		if(!isEmpty(parsing)){
-			Stack*eval = parse(parsing, activationStack);
+			Stack*eval = parse(parsing, &activationMap);
 			if(!isEmpty(eval)){
 			printf("\n%d",pop(eval).val);
 			}
