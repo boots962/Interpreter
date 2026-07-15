@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdbool.h>
-#include "Stack.h"
 #include "Integer.h"
 #include "HashMap.h"
 
