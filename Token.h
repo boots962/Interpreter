@@ -7,9 +7,12 @@ typedef enum {
     TOKEN_NUMBER,
     TOKEN_PLUS,
     TOKEN_MINUS,
+    TOKEN_MULTIPLY,
+    TOKEN_DIVIDE,
     TOKEN_OPERATOR,
     TOKEN_IDENTIFIER,
     TOKEN_KEYWORD,
+    TOKEN_ASSIGN,
     TOKEN_EOF
 } TokenType;
 

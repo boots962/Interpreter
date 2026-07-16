@@ -1,15 +1,8 @@
-#include <stdlib.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include "Integer.h"
+#ifndef PARSER_H
+#include "AST.h"
 #include "HashMap.h"
 
-Token combinedResult(Token left, Token op, Token right);
-bool canReduce(Stack *stack);
-bool isInitialize(Stack *stack);
-Token createIdentifier(Token type, Token iden, Token val);
-Stack* parse(Stack* stack, HashMap* activationMap);
+ASTNode* parse(Token* tokens);
 
 
-
-
+#endif PARSER_H

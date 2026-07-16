@@ -79,3 +79,7 @@ void freeNode(ASTNode* node){
             break;
     }
 }
+
+int evaluate(ASTNode* node){
+    
+}

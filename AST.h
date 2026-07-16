@@ -19,11 +19,22 @@ typedef struct ASTNode{
             struct ASTNode* left;
             struct ASTNode* right;
         } binary;
+        struct{
+            struct ASTNode* cond;
+            struct ASTNode* then_b;
+            struct ASTNode* else_b;
+        }cond;
+        struct{
+            char* name;
+            struct ASTNode* init;
+        }decl;
     }as;
 }ASTNode;
 
 ASTNode* create_literal_node(int value);
 ASTNode* create_binary_node(char op, ASTNode* left, ASTNode* right);
+ASTNode* create_ctrl_node(ASTNode* cond, ASTNode* then_b, ASTNode* else_b);
+ASTNode* create_decl_node(char* name, ASTNode* init);
 void freeNode(ASTNode* node);
 int evaluate(ASTNode* node);
 void printAST(ASTNode* node, int depth);
